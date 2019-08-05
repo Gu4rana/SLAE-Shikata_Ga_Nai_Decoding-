@@ -54,7 +54,7 @@ End of assembler dump.
 ### Debugging the shikata ga nai encoder
 
 The first two instructions fcmovb, fnstenv, store the FPU environment onto the stack and pop onto the eax register
-Reference: 
+Refer from: 
 Intel® 64 and IA-32 Architectures Software Developer's Manual Volume 1: Basic Architecture Chapter 8.1.10
 
 And next three just predefine the key for xor for first loop, and clear out the ecx and mov 7 to ecx counter for looping 
@@ -66,8 +66,8 @@ mov    cl,0x7
 
 ```
 
-Define a hook stop to exmine the process of decoding
----
+### Define a hook stop to exmine the process of decoding
+
 ```
 (gdb) define hook-stop
 Type commands for definition of "hook-stop".
@@ -88,7 +88,7 @@ Exmine the opcode at **0x0804a056**
 *Before decoding:* 03 70 51    0x0804a056 <+22>:	add    esi,DWORD PTR [eax+0x51]  
 *After decoding: *  03 70 14    0x0804a056 <+22>:	add    esi,DWORD PTR [eax+0x14]  
 
-#### The format of Intel instructions:
+### The format of Intel instructions:
 
 | INSTRUCTION PREFIX | OPCODE        | ModR/M             | SIB                | DISPLACEMENT   | IMMEDIATE      |
 |:------------------:|:-------------:|:------------------:|:------------------:|:--------------:|:--------------:|
@@ -117,7 +117,7 @@ For our instance Byte 0x70, the binary representation is:
 
 ![](./32-Bit_Addressing_ModR:M.png)
 
-Notice that instruction at *0x0804a056 <+22>:	add    esi,DWORD PTR [eax+0x14]*
+Notice that instruction at 0x0804a056 is changed to *0x0804a056 <+22>:	add    esi,DWORD PTR [eax+0x14]*
 ```
 (gdb) stepi
 Dump of assembler code for function code:
@@ -141,11 +141,20 @@ Dump of assembler code for function code:
    0x0804a072 <+50>:	mov    eax,DWORD PTR ds:[eax]
 End of assembler dump.
 ```
+### 2's Complement Arithmetic
 Now $eax = 0x0804a040, according to 2's complement in computer arithmetic  
 *sub    eax,0xfffffffc* equals to *add eax, 0xfffffffc's complement*  
+
 In computer, if the most significant bit is 1, then is is a negative number, the steps to find the 2's complement of a negative:
 ... Invert every bits, one to zero, zero to one
 ... Add one bit to the inverted
 
 0x00000004 is the 2's complement of 0xfffffffc
 then Eax now is set to 0x0804a044, Eax register works as an index pointer to the shellcode we want to decode.
+
+Conclusion
+---
+Shikata ga nai encoder will set a predefined key to XOR first round, and add the key with the value of our shellcode every round,  
+makes the key unique every round for different shellcode. Using one of general purpose register, in this case, Eax as an index  
+pointing to shellcode that needs to be decoded. 
+

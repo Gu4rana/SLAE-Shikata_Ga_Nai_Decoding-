@@ -84,9 +84,9 @@ which is at 0x0804a058.
 0x0804a056 <+22>:	add    esi,DWORD PTR [eax+0x51]
 Decoding happens at the last byte of add instruction, which is the displacement part of the instruction. 
 
-Exmine the opcode at **0x0804a056** 
-*Before decoding:* 03 70 51    0x0804a056 <+22>:	add    esi,DWORD PTR [eax+0x51]
-*After decoding: *  03 70 14    0x0804a056 <+22>:	add    esi,DWORD PTR [eax+0x14]
+Exmine the opcode at **0x0804a056**   
+*Before decoding:* 03 70 51    0x0804a056 <+22>:	add    esi,DWORD PTR [eax+0x51]  
+*After decoding: *  03 70 14    0x0804a056 <+22>:	add    esi,DWORD PTR [eax+0x14]  
 
 #### The format of Intel instructions:
 
@@ -115,7 +115,7 @@ For our instance Byte 0x70, the binary representation is:
 - 000 is R/M bits representing Eax register and works with later displacement byte to identify an address of a memory
 
 
-<img src="32-Bit_Addressing_ModR:M.png" width="100" >
+![](./32-Bit_Addressing_ModR:M.png)
 
 Notice that instruction at *0x0804a056 <+22>:	add    esi,DWORD PTR [eax+0x14]*
 ```
@@ -141,11 +141,11 @@ Dump of assembler code for function code:
    0x0804a072 <+50>:	mov    eax,DWORD PTR ds:[eax]
 End of assembler dump.
 ```
-Now $eax = 0x0804a040, according to 2's complement in computer arithmetic 
-*sub    eax,0xfffffffc* equals to *add eax, 0xfffffffc's complement*
+Now $eax = 0x0804a040, according to 2's complement in computer arithmetic  
+*sub    eax,0xfffffffc* equals to *add eax, 0xfffffffc's complement*  
 In computer, if the most significant bit is 1, then is is a negative number, the steps to find the 2's complement of a negative:
-...Invert every bits, one to zero, zero to one
-...Add one bit to the inverted
+... Invert every bits, one to zero, zero to one
+... Add one bit to the inverted
 
 0x00000004 is the 2's complement of 0xfffffffc
 then Eax now is set to 0x0804a044, Eax register works as an index pointer to the shellcode we want to decode.

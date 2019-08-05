@@ -66,8 +66,6 @@ mov    cl,0x7
 
 ```
 
-### Then let's move to decoding loop part
-
 Define a hook stop to exmine the process of decoding
 ---
 ```
@@ -78,8 +76,7 @@ End with a line saying just "end".
 >x/52xb &code
 >end
 ```
-x/52xb &code command shows 52 bytes from the ever begining of the shellcode to the last
-print /x $eax will print the hexa value of eax register.
+x/52xb &code command shows 52 bytes from the ever begining of the shellcode to the last.
 
 As the instruction, *xor    DWORD PTR [eax+0x18],esi*, indicates that XOR starts from 0x0804a040 + 0x18,
 which is at 0x0804a058.
@@ -118,6 +115,37 @@ For our instance Byte 0x70, the binary representation is:
 - 000 is R/M bits representing Eax register and works with later displacement byte to identify an address of a memory
 
 
-![Refer to: Intel® 64 and IA-32 Architectures Software Developer's Manual Volume 2, Chapter 2](./32-Bit_Addressing_ModR:M.png)
+<img src="32-Bit_Addressing_ModR:M.png" width="100" >
 
+Notice that instruction at *0x0804a056 <+22>:	add    esi,DWORD PTR [eax+0x14]*
+```
+(gdb) stepi
+Dump of assembler code for function code:
+   0x0804a040 <+0>:	fcmovb st,st(2)
+   0x0804a042 <+2>:	fnstenv [esp-0xc]
+   0x0804a046 <+6>:	pop    eax
+   0x0804a047 <+7>:	sub    ecx,ecx
+   0x0804a049 <+9>:	mov    esi,0x68e95945
+   0x0804a04e <+14>:	mov    cl,0x7
+   0x0804a050 <+16>:	xor    DWORD PTR [eax+0x18],esi
+=> 0x0804a053 <+19>:	sub    eax,0xfffffffc
+   0x0804a056 <+22>:	add    esi,DWORD PTR [eax+0x14]
+   0x0804a059 <+25>:	loop   0x804a050 <code+16>
+   0x0804a05b <+27>:	xor    DWORD PTR [ecx+0x36b5b76b],ebx
+   0x0804a061 <+33>:	jmp    FWORD PTR [edi]
+   0x0804a063 <+35>:	mov    ds:0x5cc69d67,al
+   0x0804a068 <+40>:	inc    BYTE PTR [edx+0x16e22849]
+   0x0804a06e <+46>:	jecxz  0x804a03b
+   0x0804a070 <+48>:	push   edx
+   0x0804a071 <+49>:	xchg   ebx,eax
+   0x0804a072 <+50>:	mov    eax,DWORD PTR ds:[eax]
+End of assembler dump.
+```
+Now $eax = 0x0804a040, according to 2's complement in computer arithmetic 
+*sub    eax,0xfffffffc* equals to *add eax, 0xfffffffc's complement*
+In computer, if the most significant bit is 1, then is is a negative number, the steps to find the 2's complement of a negative:
+...Invert every bits, one to zero, zero to one
+...Add one bit to the inverted
 
+0x00000004 is the 2's complement of 0xfffffffc
+then Eax now is set to 0x0804a044, Eax register works as an index pointer to the shellcode we want to decode.

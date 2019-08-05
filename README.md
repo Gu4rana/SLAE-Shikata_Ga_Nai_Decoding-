@@ -88,7 +88,7 @@ which is at 0x0804a058.
 Decoding happens at the last byte of add instruction, the displacement part of the instruction. 
 
 The structure of x86 instructions:
- INSTRUCTION PREFIX | OPCODE       | ModR/M             | SIB               | DISPLACEMENT  | IMMEDIATE
+  | OPCODE       | ModR/M             | SIB               | DISPLACEMENT  | IMMEDIATE
  --- | --- | --- | --- | --- | ---
  Optional 1 Byte    | 1,2 or 3 Byte| 1 Byte if required | 1 Byte if required| 1, 2 or 4 Byte|1, 2 or 4 Byte
  
@@ -96,9 +96,9 @@ Exmine the opcode at **0x0804a056** after xor with esi
 $esi = 0x68e95945
 03 70 14
 
-|  a | b  |  c | d  |  a |
+|  INSTRUCTION PREFIX | OPCODE  |  ModR/M | SIB  | DISPLACEMENT| IMMEDIATE|
 |---|---|---|---|---|
-|   |   |   |   |   |
+| Optional 1 Byte  |  1,2 or 3 Byte |  1 Byte if required | 1 Byte if required  |  1, 2 or 4 Byte | 1, 2 or 4 Byte |
 |   |   |   |   |   |
 |   |   |   |   |   |
 ```

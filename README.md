@@ -50,7 +50,7 @@ Dump of assembler code for function code:
    0x0804a072 <+50>:	mov    eax,DWORD PTR ds:[eax]
 End of assembler dump.
 ```
-### Debugging the shikata ga nai encoder
+### Debugging the decoder
 
 The first two instructions fcmovb, fnstenv, store the FPU environment onto the stack and pop onto the eax register
 Refer from: 

@@ -1,10 +1,11 @@
 # Debugging shikata ga nai encoder
-#### Execve() shellcode running /bin/sh:
+### Execve() shellcode running /bin/sh:
 ```
 "\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x89\xe2\x53\x89\xe1\xb0\x0b\xcd\x80"
+25 bytes /bin/sh shellcode
 ```
 
-#### Msfvenom encodes shellcode with shikata ga nai (one iteration):
+### Msfvenom encodes shellcode with shikata ga nai (one iteration):
 ```
 echo -ne "\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x89\xe2\x53\x89\xe1\xb0\x0b\xcd\x80" | msfvenom -a x86 --platform linux -e x86/shikata_ga_nai -f c -p - 
 
@@ -13,7 +14,7 @@ echo -ne "\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x89\x
 "\xb7\xb5\x36\xff\x2f\xa2\x67\x9d\xc6\x5c\xfe\x82\x49\x28\xe2"
 "\x16\xe3\xcb\x52\x93\x3e\x8b"
 ```
-put this encoded into c wrapper then compile with gcc 
+### Put this into c wrapper, compile with gcc 
 
 ```
 gcc -fno-stack-protector -z execstack shellcode.c -o shellcode
@@ -22,7 +23,7 @@ gdb ./shellcode
 (gdb) break *&code
 Breakpoint 1 at 0x804a040
 (gdb) r
-Starting program: /SLAE/Shellcode/Metasploit/shell 
+Starting program: 
 Shellcode Length:  52
 
 Breakpoint 1, 0x0804a040 in code ()
@@ -48,4 +49,41 @@ Dump of assembler code for function code:
    0x0804a071 <+49>:	xchg   ebx,eax
    0x0804a072 <+50>:	mov    eax,DWORD PTR ds:[eax]
 End of assembler dump.
+
 ```
+### Debugging the shikata ga nai encoder
+```
+The first two instructions fcmovb, fnstenv, store the FPU environment onto the stack and pop onto the eax register
+Reference: 
+Intel® 64 and IA-32 Architectures Software Developer's Manual Volume 1: Basic Architecture Chapter 8.1.10
+---
+And next three just predefine the key for xor for first loop, and clear out the ecx and mov 7 to ecx counter for looping 
+as the original shellcode only 25 bytes, and shikta ga nai encode 4 bytes per loop.
+sub    ecx,ecx
+mov    esi,0x68e95945
+mov    cl,0x7
+
+```
+
+### Then let's move to decoding loop part
+```
+Define a hook stop to exmine the process of decoding
+---
+(gdb) define hook-stop
+Type commands for definition of "hook-stop".
+End with a line saying just "end".
+>disassemble 
+>x/52xb &code
+>print /x $eax
+>end
+
+x/52xb &code command shows 52 bytes from the ever begining of the shellcode to the last
+print /x $eax will print the hexa value of eax register.
+---
+As the instruction, *xor    DWORD PTR [eax+0x18],esi* , indicates that XOR starts from 0x0804a040 + 0x18,
+which is at 0x0804a058.
+
+0x0804a056 <+22>:	add    esi,DWORD PTR [eax+0x51]
+Decoding happens at the last byte of add instruction, the displacement part of the instruction. 
+```
+

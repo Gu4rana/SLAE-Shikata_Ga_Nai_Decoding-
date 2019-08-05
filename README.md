@@ -154,7 +154,5 @@ then Eax now is set to 0x0804a044, Eax register works as an index pointer to the
 
 Conclusion
 ---
-Shikata ga nai encoder will set a predefined key to XOR first round, and add the key with the value of our shellcode every round,  
-makes the key unique every round for different shellcode. Using one of general purpose register, in this case, Eax as an index  
-pointing to shellcode that needs to be decoded. 
+Shikata ga nai encoder will set a predefined key to XOR first round, and add the key with the value of our shellcode every round,  makes the key unique every round for different shellcode. Using one of general purpose register, in this case, Eax as an index  pointing to shellcode that needs to be decoded. 
 

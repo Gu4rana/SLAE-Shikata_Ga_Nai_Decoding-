@@ -95,6 +95,12 @@ The structure of x86 instructions:
 Exmine the opcode at **0x0804a056** after xor with esi 
 $esi = 0x68e95945
 03 70 14
+
+|  a | b  |  c | d  |  a |
+|---|---|---|---|---|
+|   |   |   |   |   |
+|   |   |   |   |   |
+|   |   |   |   |   |
 ```
 
 ```

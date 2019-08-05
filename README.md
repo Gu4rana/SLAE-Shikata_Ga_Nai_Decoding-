@@ -85,22 +85,39 @@ As the instruction, *xor    DWORD PTR [eax+0x18],esi*, indicates that XOR starts
 which is at 0x0804a058.
 
 0x0804a056 <+22>:	add    esi,DWORD PTR [eax+0x51]
-Decoding happens at the last byte of add instruction, the displacement part of the instruction. 
+Decoding happens at the last byte of add instruction, which is the displacement part of the instruction. 
 
-The structure of x86 instructions:
+Exmine the opcode at **0x0804a056** 
+*Before decoding:* 03 70 51    0x0804a056 <+22>:	add    esi,DWORD PTR [eax+0x51]
+*After decoding: *  03 70 14    0x0804a056 <+22>:	add    esi,DWORD PTR [eax+0x14]
 
-| INSTRUCTION PREFIX | OPCODE        | ModR/M             | SIB                | DISPLACEMENT   | IMMEDIATE      |
-|-------------------:|---------------|--------------------|--------------------|----------------|----------------|
-| Optional 1 Byte    | 1,2 or 3 Byte | 1 Byte if required | 1 Byte if required | 1, 2 or 4 Byte | 1, 2 or 4 Byte |
-
-Exmine the opcode at **0x0804a056** after xor with esi 
-$esi = 0x68e95945
-03 70 14
+#### The format of Intel instructions:
 
 | INSTRUCTION PREFIX | OPCODE        | ModR/M             | SIB                | DISPLACEMENT   | IMMEDIATE      |
-|-------------------:|---------------|--------------------|--------------------|----------------|----------------|
+|:------------------:|:-------------:|:------------------:|:------------------:|:--------------:|:--------------:|
 | Optional 1 Byte    | 1,2 or 3 Byte | 1 Byte if required | 1 Byte if required | 1, 2 or 4 Byte | 1, 2 or 4 Byte |
-```
 
-```
+
+
+|OPCODE|ModR/M|DISPLACEMENT|
+|---|---|---|
+|03 |70 |51 |
+
+The format of ModR/M Byte:
+
+|Mod |Register/Opcode|R/M|
+|---|---|---|
+|0-1 bit |2-4 bit |5-7 bit|
+
+For our instance Byte 0x70, the binary representation is:
+
+0111 0000
+
+- 01 is Mod bits
+- 110 is Register bits representing Esi register in this case
+- 000 is R/M bits representing Eax register and works with later displacement byte to identify an address of a memory
+
+
+![Refer to: Intel® 64 and IA-32 Architectures Software Developer's Manual Volume 2, Chapter 2](./32-Bit_Addressing_ModR:M.png)
+
 

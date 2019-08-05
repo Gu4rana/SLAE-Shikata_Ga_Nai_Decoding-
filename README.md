@@ -49,7 +49,6 @@ Dump of assembler code for function code:
    0x0804a071 <+49>:	xchg   ebx,eax
    0x0804a072 <+50>:	mov    eax,DWORD PTR ds:[eax]
 End of assembler dump.
-
 ```
 ### Debugging the shikata ga nai encoder
 
@@ -63,7 +62,6 @@ as the original shellcode only 25 bytes, and shikta ga nai encode 4 bytes per lo
 sub    ecx,ecx
 mov    esi,0x68e95945
 mov    cl,0x7
-
 ```
 
 ### Define a hook stop to exmine the process of decoding

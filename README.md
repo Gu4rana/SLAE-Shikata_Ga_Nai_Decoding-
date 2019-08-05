@@ -85,9 +85,8 @@ which is at 0x0804a058.
 Decoding happens at the last byte of add instruction, which is the displacement part of the instruction. 
 
 Exmine the opcode at **0x0804a056**   
-*Before decoding:* 03 70 51    0x0804a056 <+22>:	add    esi,DWORD PTR [eax+0x51]  
-
-*After decoding: *  03 70 14    0x0804a056 <+22>:	add    esi,DWORD PTR [eax+0x14]  
+*Before decoding:* 03 70 51    0x0804a056 <+22>:	add    esi,DWORD PTR [eax+0x51]\
+*After decoding: *  03 70 14    0x0804a056 <+22>:	add    esi,DWORD PTR [eax+0x14] 
 
 ### The format of Intel instructions:
 

@@ -80,12 +80,12 @@ x/52xb &code command shows 52 bytes from the ever begining of the shellcode to t
 
 As the instruction, *xor    DWORD PTR [eax+0x18],esi*, indicates that XOR starts from 0x0804a040 + 0x18,
 which is at 0x0804a058.
+*0x0804a056 <+22>:	add    esi,DWORD PTR [eax+0x51]*  
 
-0x0804a056 <+22>:	add    esi,DWORD PTR [eax+0x51]
 Decoding happens at the last byte of add instruction, which is the displacement part of the instruction. 
 
 Exmine the opcode at **0x0804a056**   
-Before decoding: 03 70 51    0x0804a056 <+22>:	add    esi,DWORD PTR [eax+0x51]
+Before decoding: 03 70 51    0x0804a056 <+22>:	add    esi,DWORD PTR [eax+0x51]  
 After decoding:  03 70 14    0x0804a056 <+22>:	add    esi,DWORD PTR [eax+0x14]
 
 ### The format of Intel instructions:
